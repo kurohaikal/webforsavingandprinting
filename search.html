@@ -16,7 +16,7 @@
     </div>
 
     <div class="home-btn">
-        <a href="index.html">home</a>
+        <a href="homepage.html">home</a>
     </div>
 
 <script>
@@ -26,7 +26,7 @@ const searchInput = document.getElementById("searchInput");
 let records = JSON.parse(localStorage.getItem("records")) || [];
 
 function displayRecords(list) {
-    recordsContainer.innerHTML = "";
+    recordsContainer.innerHTML = "";        
 
     if (list.length === 0) {
         recordsContainer.innerHTML = "<p style='color:white'>No records found</p>";
