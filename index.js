@@ -1,51 +1,25 @@
 function saveData() {
-    const tajuk = document.getElementById("tajuk").value;
-    const pemaju = document.getElementById("pemaju").value;
-    const nofail = document.getElementById("nofail").value;
-    const taman = document.getElementById("taman").value;
-    const file = document.getElementById("gambar").files[0];
-
-    if (!file || !nofail) {
-        alert("No Fail dan gambar wajib diisi.");
-        return;
-    }
-
     const reader = new FileReader();
+    const fileInput = document.getElementById('gambar').files[0];
 
-    reader.onload = function () {
-        const record = {
-            tajuk,
-            pemaju,
-            nofail,
-            taman,
-            image: reader.result
-        };
-
-        // ✅ Get existing records or empty array
-        const records = JSON.parse(localStorage.getItem("records")) || [];
-
-        // ✅ Prevent duplicate No. Fail
-        const index = records.findIndex(r => r.nofail === nofail);
-        if (index !== -1) {
-            records[index] = record; // overwrite
-        } else {
-            records.push(record);
-        }
-
-        // ✅ Save permanently
-        localStorage.setItem("records", JSON.stringify(records));
-        localStorage.setItem("selectedRecord", JSON.stringify(record));
-
-        // ✅ Alert user
-        alert("Rekod berjaya disimpan!");
-
-        // ✅ Clear inputs for next entry
-        document.getElementById("tajuk").value = "";
-        document.getElementById("pemaju").value = "";
-        document.getElementById("nofail").value = "";
-        document.getElementById("taman").value = "";
-        document.getElementById("gambar").value = "";
+    // Get text values
+    const data = {
+        tajuk: document.getElementById('tajuk').value,
+        pemaju: document.getElementById('pemaju').value,
+        nofail: document.getElementById('nofail').value,
+        taman: document.getElementById('taman').value
     };
 
-    reader.readAsDataURL(file);
+    if (fileInput) {
+        reader.onload = function(e) {
+            // Add image string to our data object
+            data.image = e.target.result; 
+            localStorage.setItem('savedRecord', JSON.stringify(data));
+            alert("Data saved successfully!");
+        };
+        reader.readAsDataURL(fileInput);
+    } else {
+        localStorage.setItem('savedRecord', JSON.stringify(data));
+        alert("Data saved (without image)!");
+    }
 }

@@ -1,46 +1,47 @@
-document.getElementById("searchBtn").addEventListener("click", searchRecord);
+// specific search.js
 
-function searchRecord() {
-    const tajuk = document.getElementById("tajuk").value.trim();
-    const pemaju = document.getElementById("pemaju").value.trim();
-    const nofail = document.getElementById("nofail").value.trim();
-    const taman = document.getElementById("taman").value.trim();
-    const error = document.getElementById("error");
+document.getElementById('searchBtn').addEventListener('click', function() {
+    // 1. Get the value the user typed in the search box
+    const searchVal = document.getElementById('tajuk').value.trim().toLowerCase();
+    const errorMsg = document.getElementById('error');
+    
+    // 2. Retrieve the data from LocalStorage
+    const storedData = localStorage.getItem('savedRecord');
 
-    error.textContent = "";
-
-    // ❌ All empty
-    if (!tajuk && !pemaju && !nofail && !taman) {
-        error.textContent = "Sila isi sekurang-kurangnya satu maklumat carian";
+    // 3. Logic check
+    if (!searchVal) {
+        errorMsg.innerText = "Sila masukkan tajuk untuk carian.";
+        errorMsg.style.color = "orange";
         return;
     }
 
-    let foundRecord = null;
+    if (storedData) {
+        const data = JSON.parse(storedData);
 
-    // 🔍 Search through all saved records
-    for (let key in localStorage) {
-        if (key.startsWith("record_")) {
-            const record = JSON.parse(localStorage.getItem(key));
+        // 4. Compare search input with the saved 'tajuk'
+        // We use .includes() so it can find partial matches
+        if (data.tajuk.toLowerCase().includes(searchVal)) {
+            
+            // Success! Save this specific found record to 'currentView' 
+            // so result.html knows which one to display
+            localStorage.setItem('currentView', JSON.stringify(data));
+            
+            errorMsg.innerText = "Rekod ditemui! Membuka...";
+            errorMsg.style.color = "green";
 
-            if (
-                (!tajuk || record.tajuk === tajuk) &&
-                (!pemaju || record.pemaju === pemaju) &&
-                (!nofail || record.nofail === nofail) &&
-                (!taman || record.taman === taman)
-            ) {
-                foundRecord = record;
-                break;
-            }
+            // 5. Redirect to the result page after a short delay
+            setTimeout(() => {
+                window.location.href = 'result.html';
+            }, 800); 
+
+        } else {
+            // No match found
+            errorMsg.innerText = "Tiada rekod dijumpai dengan tajuk tersebut.";
+            errorMsg.style.color = "red";
         }
+    } else {
+        // No data has been saved at all yet
+        errorMsg.innerText = "Tiada data dalam simpanan. Sila simpan rekod baru terlebih dahulu.";
+        errorMsg.style.color = "red";
     }
-
-    // ❌ Not found
-    if (!foundRecord) {
-        error.textContent = "Rekod tidak dijumpai";
-        return;
-    }
-
-    // ✅ Save & redirect
-    localStorage.setItem("currentResult", JSON.stringify(foundRecord));
-    window.location.href = "result.html";
-}
+});

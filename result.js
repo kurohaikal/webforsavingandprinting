@@ -1,44 +1,29 @@
-const record = JSON.parse(localStorage.getItem("selectedRecord"));
+window.onload = function() {
+    const storedData = localStorage.getItem('currentView');
+    
+    if (storedData) {
+        const data = JSON.parse(storedData);
 
-if (!record) {
-    alert("Tiada rekod dipilih.");
-    window.location.href = "specific search.html";
-}
+        // Fill the text data
+        document.getElementById('tajuk').innerText = "TAJUK: " + data.tajuk;
+        document.getElementById('pemaju').innerText = "PEMAJU: " + data.pemaju;
+        document.getElementById('nofail').innerText = "NO. FAIL: " + data.nofail;
+        document.getElementById('taman').innerText = "NAMA TAMAN: " + data.taman;
 
-// Fill text
-document.getElementById("tajuk").innerText = "Tajuk Permohonan: " + record.tajuk;
-document.getElementById("pemaju").innerText = "Pemaju: " + record.pemaju;
-document.getElementById("nofail").innerText = "No Fail: " + record.nofail;
-document.getElementById("taman").innerText = "Nama Taman: " + record.taman;
+        // Display the image
+        if (data.image) {
+            document.getElementById('certificateImage').src = data.image;
+        }
+    } else {
+        alert("No record selected!");
+        window.location.href = 'index.html';
+    }
+};
 
-// Fill image
-const certImg = document.getElementById("certificateImage");
-certImg.src = record.image;
-
-// HOME
 function goHome() {
-    window.location.href = "index.html";
+    window.location.href = 'index.html';
 }
 
-// 🖨 PRINT IMAGE ONLY (SAME PAGE)
 function printImage() {
-    const body = document.body;
-
-    // Save original page
-    const originalContent = body.innerHTML;
-
-    // Replace body with image only
-    body.innerHTML = `
-        <div style="text-align:center;">
-            <img src="${record.image}" style="width:100%;">
-        </div>
-    `;
-
-    window.print();
-
-    // Restore page after print
-    body.innerHTML = originalContent;
-
-    // Reload JS bindings
-    location.reload();
+    window.print(); // Simple way to print the page
 }
