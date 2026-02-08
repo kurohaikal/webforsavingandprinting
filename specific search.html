@@ -5,6 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Carian Rekod - Jabatan Pembangunan</title>
     <link rel="stylesheet" href="specific search.css">
+    <style>
+        /* Small style addition to make the history search look clean */
+        #historySearch {
+            width: 90%;
+            padding: 8px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+    </style>
 </head>
 <body>
 
@@ -18,6 +28,8 @@
     
     <aside class="history-sidebar">
         <h2>HISTORY</h2>
+        <input type="text" id="historySearch" onkeyup="filterHistory()" placeholder="Search taman in history...">
+        
         <div id="historyList" class="scrollable-list">
             </div>
     </aside>
@@ -50,5 +62,26 @@
 </div>
 
 <script src="specific search.js"></script>
+
+<script>
+function filterHistory() {
+    // 1. Get the text from the search bar
+    let input = document.getElementById('historySearch').value.toLowerCase();
+    
+    // 2. Get the history list and all items inside it
+    let list = document.getElementById('historyList');
+    let items = list.getElementsByTagName('div'); // Assuming history items are inside <div> tags
+
+    // 3. Loop through items and hide those that don't match the search
+    for (let i = 0; i < items.length; i++) {
+        let textContent = items[i].textContent || items[i].innerText;
+        if (textContent.toLowerCase().indexOf(input) > -1) {
+            items[i].style.display = "";
+        } else {
+            items[i].style.display = "none";
+        }
+    }
+}
+</script>
 </body>
 </html>
